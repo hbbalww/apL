@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4b2995" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beranda </title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+    /* Reset & body */
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f0f4f8;
+      color: #111827;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Header */
+    header {
+      background: white;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      height: 64px;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: text;
+      flex-shrink: 0;
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #4b2995;
+      margin: 0;
+    }
+    .profile-pic {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #4b2995;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .profile-pic:hover {
+      transform: scale(1.1);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.5rem 80px;
+      background: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+      animation: fadeInScale 0.5s ease forwards;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    @keyframes fadeInScale {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Greeting */
+    .greeting {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #4b2995;
+    }
+
+    /* To-Do Section */
+    .todo-section {
+      background: white;
+      padding: 1rem 1.3rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgb(75 41 149 / 0.12);
+      display: flex;
+      flex-direction: column;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .todo-header {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      color: #3b0764;
+      user-select: text;
+    }
+    .todo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .todo-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.3rem;
+      border-bottom: 1px solid #e5e7eb;
+      transition: background-color 0.3s ease;
+      user-select: text;
+    }
+    .todo-list li:hover {
+      background-color: #f9fafb;
+    }
+    .todo-list li input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 0.7rem;
+      cursor: pointer;
+    }
+    .todo-list li .text {
+      flex: 1;
+      color: #374151;
+      font-size: 1rem;
+      word-break: break-word;
+    }
+    .todo-list li.completed .text {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+    .todo-list li button.delete-btn {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      font-weight: 700;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: 0.8rem;
+      transition: color 0.2s ease;
+    }
+    .todo-list li button.delete-btn:hover {
+      color: #b91c1c;
+    }
+
+    /* Floating Add button */
+    #addTodoBtn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      background-color: #4b2995;
+      color: white;
+      border: none;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      font-size: 2.2rem;
+      line-height: 0;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgb(75 41 149 / 0.4);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      z-index: 20;
+    }
+    #addTodoBtn:hover {
+      background-color: #6e52db;
+      transform: scale(1.1);
+    }
+    #addTodoBtn:active {
+      transform: scale(1);
+      box-shadow: none;
+    }
+
+    /* Notes Section */
+    .notes-section {
+      background: white;
+      padding: 1rem 1.3rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgb(75 41 149 / 0.12);
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      user-select: text;
+    }
+    .notes-section label {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+      color: #3b0764;
+    }
+    .notes-section textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-size: 1rem;
+      padding: 0.7rem 1rem;
+      border-radius: 0.6rem;
+      border: 1.5px solid #cbd5e1;
+      transition: border-color 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      color: #374151;
+      outline: none;
+    }
+    .notes-section textarea:focus {
+      border-color: #4b2995;
+      box-shadow: 0 0 8px rgb(75 41 149 / 0.45);
+    }
+
+    /* Quote Section */
+    .quote-section {
+      max-width: 480px;
+      margin: 0 auto;
+      background: white;
+      padding: 1.2rem 1.4rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgb(75 41 149 / 0.12);
+      user-select: text;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      font-style: italic;
+      color: #4338ca;
+    }
+    .quote-text {
+      font-size: 1.1rem;
+      margin-bottom: 1.0rem;
+      min-height: 68px;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .quote-author {
+      font-weight: 700;
+      font-style: normal;
+      font-size: 0.95rem;
+      color: #312e81;
+      margin-bottom: 0.8rem;
+    }
+    #newQuoteBtn {
+      background: #4b2995;
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 0.8rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgb(75 41 149 / 0.35);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #newQuoteBtn:hover {
+      background: #6f55d1;
+    }
+
+    /* Bottom Navigation */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 64px;
+      background: white;
+      box-shadow: 0 -1px 10px rgb(0 0 0 / 0.07);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+      z-index: 15;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+    nav.bottom-nav button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #8b8b8b;
+      font-size: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: 500;
+      gap: 4px;
+      transition: color 0.3s ease;
+      user-select: none;
+    }
+    nav.bottom-nav button svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+    }
+    nav.bottom-nav button.active {
+      color: #4b2995;
+    }
+    nav.bottom-nav button:focus-visible {
+      outline: 2px solid #4b2995;
+      outline-offset: 3px;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Halo, <span id="usernameDisplay">User</span>!</h1>
+    <img id="profileImage" class="profile-pic" alt="Profile" title="Klik untuk buka Profil" src="default-profile.png" tabindex="0" />
+  </header>
+
+  <main>
+    <!-- To-Do List -->
+    <section class="todo-section" aria-label="Daftar To-Do Anda">
+      <div class="todo-header">Daftar Tugas Harian</div>
+      <ul class="todo-list" id="todoList" aria-live="polite"></ul>
+      <small style="color:#6b7280; user-select:none;">Klik tanda centang untuk selesaikan, klik x untuk hapus.</small>
+    </section>
+
+    <!-- Notes -->
+    <section class="notes-section" aria-label="Catatan Singkat">
+      <label for="notesArea">Catatan Singkat</label>
+      <textarea id="notesArea" placeholder="Tulis catatan kamu di sini..."></textarea>
+    </section>
+
+    <!-- Quote Motivasi -->
+    <section class="quote-section" aria-label="Kutipan Motivasi">
+      <div class="quote-text" id="quoteText">"Ketika kamu berhenti mengejar hal yang salah, kamu memberikan kesempatan untuk hal yang benar mengejar kamu."</div>
+      <div class="quote-author" id="quoteAuthor">- Layanan AI</div>
+      <button id="newQuoteBtn" aria-label="Dapatkan kutipan motivasi baru">Quote Baru</button>
+    </section>
+  </main>
+
+  <!-- Floating Add To-Do Button -->
+  <button id="addTodoBtn" aria-label="Tambah tugas baru">+</button>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav" role="navigation" aria-label="Navigasi utama">
+    <button aria-current="page" class="active" id="navHome" tabindex="0" title="Beranda">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 12l9-9 9 9" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M9 21V12h6v9" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      Beranda
+    </button>
+    <button id="navTasks" tabindex="-1" title="Tugas (To-Do)">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+        <line x1="3" y1="10" x2="21" y2="10" stroke-linecap="round" stroke-linejoin="round"></line>
+        <line x1="7" y1="4" x2="7" y2="20"></line>
+      </svg>
+      Tugas
+    </button>
+    <button id="navNotes" tabindex="-1" title="Catatan">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9l7 7v9a2 2 0 0 1-2 2z"></path>
+        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+      </svg>
+      Catatan
+    </button>
+    <button id="navProfile" tabindex="-1" title="Profil">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"></circle>
+        <path d="M5.5 21a6.5 6.5 0 0 1 13 0" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      Profil
+    </button>
+  </nav>
+
+<script>
+  // Get username from localStorage or default
+  const username = localStorage.getItem('username') || 'User';
+  document.getElementById('usernameDisplay').textContent = username;
+
+  // Profile image fallback using pravatar + username
+  const profileImage = document.getElementById('profileImage');
+  const defaultProfileImage = 'https://i.pravatar.cc/150?u=' + encodeURIComponent(username);
+  const storedProfileImage = localStorage.getItem('profileImage');
+  profileImage.src = storedProfileImage || defaultProfileImage;
+
+  // Click or enter on profileImage leads to profile.html
+  function goToProfile() {
+    window.location.href = 'profile.html';
+  }
+  profileImage.addEventListener('click', goToProfile);
+  profileImage.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      goToProfile();
+    }
+  });
+
+  /* ====== TO-DO LIST LOGIC ====== */
+  const todoList = document.getElementById('todoList');
+
+  // Load todos from localStorage or empty array
+  let todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+  // Render to-do list items
+  function renderTodos() {
+    todoList.innerHTML = '';
+    todos.forEach((todo, idx) => {
+      const li = document.createElement('li');
+      li.className = todo.completed ? 'completed' : '';
+      li.setAttribute('aria-label', todo.text + (todo.completed ? ', selesai' : ', belum selesai'));
+
+      // Checkbox
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = todo.completed;
+      checkbox.setAttribute('aria-checked', todo.completed);
+      checkbox.addEventListener('change', () => {
+        todos[idx].completed = checkbox.checked;
+        saveTodos();
+        renderTodos();
+      });
+
+      // Text label
+      const span = document.createElement('span');
+      span.className = 'text';
+      span.textContent = todo.text;
+
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '×';
+      delBtn.className = 'delete-btn';
+      delBtn.setAttribute('aria-label', 'Hapus ' + todo.text);
+      delBtn.addEventListener('click', () => {
+        todos.splice(idx, 1);
+        saveTodos();
+        renderTodos();
+      });
+
+      li.appendChild(checkbox);
+      li.appendChild(span);
+      li.appendChild(delBtn);
+      todoList.appendChild(li);
+    });
+  }
+
+  // Save to localStorage
+  function saveTodos() {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }
+
+  // Add new todo prompt
+  function addNewTodo() {
+    const task = prompt('Masukkan tugas baru:');
+    if (task && task.trim() !== '') {
+      todos.push({ text: task.trim(), completed: false });
+      saveTodos();
+      renderTodos();
+    }
+  }
+
+  // Initialize list
+  renderTodos();
+
+  // Add button click events
+  const addTodoBtn = document.getElementById('addTodoBtn');
+  addTodoBtn.addEventListener('click', addNewTodo);
+
+  // Keyboard enter to add todo button for accessibility
+  addTodoBtn.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      addNewTodo();
+    }
+  });
+
+
+  /* ====== NOTES AREA LOGIC ====== */
+  const notesArea = document.getElementById('notesArea');
+  // Load saved notes
+  notesArea.value = localStorage.getItem('notes') || '';
+
+  // Save notes to localStorage on input
+  notesArea.addEventListener('input', () => {
+    localStorage.setItem('notes', notesArea.value);
+  });
+
+
+  /* ===== QUOTE MOTIVASI ===== */
+  const quotes = [
+    { text: "Kesuksesan tidak datang kepada Anda, Anda harus mengejarnya.", author: "Marva Collins" },
+    { text: "Jangan berhenti ketika lelah, berhentilah ketika selesai.", author: "Marilyn Monroe" },
+    { text: "Percaya kamu bisa dan kamu sudah setengah jalan.", author: "Theodore Roosevelt" },
+    { text: "Kesempatan tidak datang dua kali.", author: "John Wooden" },
+    { text: "Hidup adalah 10% apa yang terjadi padamu dan 90% bagaimana kamu bereaksi.", author: "Charles R. Swindoll" },
+    { text: "Bangkitlah sejauh kamu jatuh.", author: "Unknown" },
+    { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+  ];
+
+  const quoteText = document.getElementById('quoteText');
+  const quoteAuthor = document.getElementById('quoteAuthor');
+  const newQuoteBtn = document.getElementById('newQuoteBtn');
+
+  function getRandomQuote() {
+    return quotes[Math.floor(Math.random() * quotes.length)];
+  }
+
+  function displayRandomQuote() {
+    const q = getRandomQuote();
+    quoteText.textContent = `"${q.text}"`;
+    quoteAuthor.textContent = `- ${q.author}`;
+  }
+
+  newQuoteBtn.addEventListener('click', displayRandomQuote);
+  // Show a quote at start
+  displayRandomQuote();
+
+
+  /* ===== BOTTOM NAVIGATION LOGIC ===== */
+  const navButtons = document.querySelectorAll('nav.bottom-nav button');
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navButtons.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('tabindex', '-1');
+        b.removeAttribute('aria-current');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-current', 'page');
+      btn.setAttribute('tabindex', '0');
+      // Scroll main to sections according to button clicked
+      switch (btn.id) {
+        case 'navHome':
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          break;
+        case 'navTasks':
+          document.querySelector('.todo-section').scrollIntoView({ behavior: 'smooth' });
+          break;
+        case 'navNotes':
+          document.querySelector('.notes-section').scrollIntoView({ behavior: 'smooth' });
+          break;
+        case 'navProfile':
+          goToProfile();
+          break;
+      }
+    });
+  });
+</script>
+</body>
+</html>
