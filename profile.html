@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profil</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    h1 {
+      color: #4b2995;
+      margin-bottom: 2rem;
+    }
+    .profile-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 20px rgba(75, 41, 149, 0.15);
+      width: 320px;
+    }
+    .profile-picture {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid #4b2995;
+      object-fit: cover;
+      margin-bottom: 1.5rem;
+      transition: transform 0.4s ease;
+    }
+    .profile-picture:hover {
+      transform: scale(1.1);
+      cursor: pointer;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    label.upload-btn {
+      display: inline-block;
+      background: #4b2995;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 0.6rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    label.upload-btn:hover {
+      background: #6652d3;
+    }
+    .back-btn {
+      margin-top: 2rem;
+      background: #ccc;
+      color: #333;
+      text-decoration: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 0.6rem;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+    .back-btn:hover {
+      background: #bbb;
+    }
+  </style>
+</head>
+<body>
+  <h1>Profil Kamu</h1>
+  <div class="profile-container" role="main">
+    <img id="profilePic" class="profile-picture" alt="Foto Profil" src="default-profile.png" title="Klik untuk ganti foto" tabindex="0" />
+    <input type="file" id="fileInput" accept="image/*" />
+    <label for="fileInput" class="upload-btn" tabindex="0">Ganti Foto Profil</label>
+
+    <a href="index.html" class="back-btn" role="button" tabindex="0">Kembali ke Beranda</a>
+  </div>
+
+  <script>
+    const profilePic = document.getElementById('profilePic');
+    const fileInput = document.getElementById('fileInput');
+
+    // Load saved profile image from localStorage or fallback placeholder
+    const savedImage = localStorage.getItem('profileImage');
+    if (savedImage) {
+      profilePic.src = savedImage;
+    } else {
+      // Placeholder avatar based on username or generic
+      const username = localStorage.getItem('username') || 'User';
+      profilePic.src = 'https://i.pravatar.cc/150?u=' + username;
+    }
+
+    function readImage(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        profilePic.src = e.target.result;
+        localStorage.setItem('profileImage', e.target.result);
+      }
+      reader.readAsDataURL(file);
+    }
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if(file && file.type.startsWith('image/')){
+        readImage(file);
+      } else {
+        alert('Mohon unggah file gambar yang valid.');
+      }
+    });
+
+    // Accessibility: klik gambar bisa fokus ke file input
+    profilePic.addEventListener('click', () => {
+      fileInput.click();
+    });
+    profilePic.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+  </script>
+</body>
+</html>
