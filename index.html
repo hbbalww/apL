@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220;
+    --card:#131C2E;
+    --card-edge:#1E2A42;
+    --lcd:#BFFF7A;
+    --lcd-dim:#5C7A45;
+    --text:#E7ECF3;
+    --muted:#7C8AA3;
+    --key:#1A2439;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:radial-gradient(circle at 50% 0%, #16213A 0%, var(--bg) 60%);
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--text);
+    min-height:100vh;
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* ---------- PAGE 1 ---------- */
+  #page1{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .app{
+    width:100%;
+    max-width:340px;
+    background:var(--card);
+    border:1px solid var(--card-edge);
+    border-radius:28px;
+    padding:26px 22px 30px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+  .app-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .app-header .dots span{
+    display:inline-block;
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--muted);
+    opacity:0.4;
+    margin-left:4px;
+  }
+  .brand{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.5px;
+    color:var(--muted);
+  }
+  .display{
+    background:#0A0F1A;
+    border-radius:16px;
+    padding:22px 18px;
+    margin-bottom:22px;
+    border:1px solid #0E1526;
+  }
+  .display .op{
+    font-size:12px;
+    color:var(--muted);
+    min-height:14px;
+    letter-spacing:1px;
+  }
+  .display .result{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:44px;
+    color:var(--lcd);
+    text-align:right;
+    letter-spacing:1px;
+    text-shadow:0 0 18px rgba(191,255,122,0.25);
+  }
+  .keys{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .key{
+    background:var(--key);
+    border-radius:12px;
+    text-align:center;
+    padding:14px 0;
+    font-size:15px;
+    color:var(--muted);
+    user-select:none;
+  }
+  .key.dim{opacity:0.35;}
+
+  .start-zone{
+    position:relative;
+    height:76px;
+  }
+  #startBtn{
+    position:absolute;
+    left:0; top:0;
+    width:160px;
+    padding:18px 0;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(180deg, #D4FF9A, var(--lcd));
+    color:#0B1220;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:16px;
+    letter-spacing:0.5px;
+    cursor:pointer;
+    transition:left .16s ease, top .16s ease, filter .25s ease, transform .16s ease;
+    box-shadow:0 10px 24px -8px rgba(191,255,122,0.45);
+    z-index:999;
+  }
+  #startBtn.roaming{
+    position:fixed;
+    width:140px;
+  }
+  #startBtn:active{transform:scale(0.97);}
+
+  .hint{
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+    margin-top:16px;
+    letter-spacing:0.3px;
+  }
+
+  /* ---------- PAGE 2 ---------- */
+  #page2{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(circle at 50% 38%, #2B1414 0%, #170A0A 55%, #0C0505 100%);
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  #page2::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:0.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+  .frame{
+    position:absolute;
+    inset:18px;
+    border:1px solid rgba(212,175,55,0.55);
+    pointer-events:none;
+  }
+  .frame::before, .frame::after,
+  .frame-inner::before, .frame-inner::after{
+    content:"";
+    position:absolute;
+    width:26px; height:26px;
+    border:1px solid #D4AF37;
+  }
+  .frame-inner{
+    position:absolute;
+    inset:26px;
+    pointer-events:none;
+  }
+  .frame-inner::before{ top:0; left:0; border-right:none; border-bottom:none; }
+  .frame-inner::after{ top:0; right:0; border-left:none; border-bottom:none; }
+  .corner-bl{ position:absolute; bottom:26px; left:26px; width:26px; height:26px; border:1px solid #D4AF37; border-right:none; border-top:none; }
+  .corner-br{ position:absolute; bottom:26px; right:26px; width:26px; height:26px; border:1px solid #D4AF37; border-left:none; border-top:none; }
+
+  .reveal-wrap{
+    position:relative;
+    text-align:center;
+    padding:0 32px;
+    max-width:900px;
+  }
+  .eyebrow{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:13px;
+    letter-spacing:6px;
+    text-transform:uppercase;
+    color:#D4AF37;
+    opacity:0;
+    animation:riseIn .7s ease forwards;
+  }
+  .eyebrow::before, .eyebrow::after{
+    content:"—";
+    margin:0 10px;
+    opacity:0.6;
+  }
+  .reveal-text{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:900;
+    font-size:clamp(46px, 10.5vw, 128px);
+    line-height:1.02;
+    letter-spacing:-1px;
+    margin:14px 0 10px;
+    background:linear-gradient(180deg, #FDF3D8 0%, #E8C976 45%, #B8862F 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 6px 40px rgba(212,175,55,0.25);
+    opacity:0;
+    transform:scale(0.85);
+    animation:revealPop 1s cubic-bezier(.22,1,.36,1) .25s forwards;
+  }
+  .subtitle{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:2px;
+    color:#B8A98A;
+    text-transform:uppercase;
+    opacity:0;
+    animation:riseIn .7s ease .9s forwards;
+  }
+  .rule{
+    width:70px; height:1px;
+    background:linear-gradient(90deg, transparent, #D4AF37, transparent);
+    margin:22px auto;
+    opacity:0;
+    animation:riseIn .7s ease .7s forwards;
+  }
+
+  .seal{
+    position:absolute;
+    bottom:-38px;
+    right:-18px;
+    width:108px; height:108px;
+    border-radius:50%;
+    border:1.5px dashed #D4AF37;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:rotate(-14deg) scale(0.6);
+    opacity:0;
+    animation:sealIn .6s cubic-bezier(.34,1.56,.64,1) 1.3s forwards;
+  }
+  .seal::before{
+    content:"";
+    position:absolute;
+    inset:8px;
+    border-radius:50%;
+    border:1px solid #D4AF37;
+  }
+  .seal span{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:9px;
+    letter-spacing:1.5px;
+    color:#D4AF37;
+    text-align:center;
+    line-height:1.5;
+  }
+
+  @keyframes riseIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes revealPop{
+    0%{ opacity:0; transform:scale(0.85); }
+    60%{ opacity:1; transform:scale(1.03); }
+    100%{ opacity:1; transform:scale(1); }
+  }
+  @keyframes sealIn{
+    to{ opacity:1; transform:rotate(-14deg) scale(1); }
+  }
+
+  .confetti{
+    position:absolute;
+    top:-5%;
+    width:8px; height:14px;
+    opacity:0.9;
+    animation:fall linear infinite;
+  }
+  @keyframes fall{
+    0%{ transform:translateY(0) rotate(0deg); }
+    100%{ transform:translateY(110vh) rotate(540deg); }
+  }
+</style>
+</head>
+<body>
+
+<div id="page1">
+  <div class="app">
+    <div class="app-header">
+      <span class="brand">Kalkulator</span>
+      <span class="dots"><span></span><span></span><span></span></span>
+    </div>
+    <div class="display">
+      <div class="op">siap digunakan</div>
+      <div class="result">0</div>
+    </div>
+    <div class="keys">
+      <div class="key dim">7</div><div class="key dim">8</div><div class="key dim">9</div><div class="key dim">÷</div>
+      <div class="key dim">4</div><div class="key dim">5</div><div class="key dim">6</div><div class="key dim">×</div>
+      <div class="key dim">1</div><div class="key dim">2</div><div class="key dim">3</div><div class="key dim">−</div>
+    </div>
+    <div class="start-zone" id="startZone">
+      <button id="startBtn">Mulai</button>
+    </div>
+    <div class="hint">tekan mulai untuk membuka kalkulator</div>
+  </div>
+</div>
+
+<div id="page2">
+  <div class="frame"></div>
+  <div class="frame-inner"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+  <div class="reveal-wrap">
+    <div class="eyebrow">Pengumuman Resmi</div>
+    <div class="reveal-text">Mitohk<br>Inul</div>
+    <div class="rule"></div>
+    <div class="subtitle">Dikeluarkan &amp; disahkan hari ini</div>
+    <div class="seal">
+      <span>RESMI<br>&amp; SAH<br>2026</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('startBtn');
+  const zone = document.getElementById('startZone');
+  let clicks = 0;
+
+  function randomPos(){
+    if (!btn.classList.contains('roaming')) {
+      btn.classList.add('roaming');
+    }
+    const btnRect = btn.getBoundingClientRect();
+    const margin = 16;
+    const maxX = Math.max(window.innerWidth - btnRect.width - margin*2, 0);
+    const maxY = Math.max(window.innerHeight - btnRect.height - margin*2, 0);
+    const x = margin + Math.random() * maxX;
+    const y = margin + Math.random() * maxY;
+    btn.style.left = x + 'px';
+    btn.style.top = y + 'px';
+  }
+
+  btn.addEventListener('click', () => {
+    clicks++;
+
+    if (clicks >= 5) {
+      document.getElementById('page1').style.display = 'none';
+      const p2 = document.getElementById('page2');
+      p2.style.display = 'flex';
+      // confetti jatuh dari atas
+      const colors = ['#D4AF37','#F5EDE0','#8B1E1E','#E8C976'];
+      for(let i=0;i<40;i++){
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        const w = 5 + Math.random()*5;
+        const h = 10 + Math.random()*10;
+        c.style.width = w+'px';
+        c.style.height = h+'px';
+        c.style.left = Math.random()*100+'%';
+        c.style.background = colors[i % colors.length];
+        c.style.animationDuration = (3 + Math.random()*3)+'s';
+        c.style.animationDelay = (Math.random()*3)+'s';
+        c.style.borderRadius = Math.random() > 0.5 ? '2px' : '50%';
+        p2.appendChild(c);
+      }
+      return;
+    }
+
+    // still trolling: blur increases + button dodges
+    btn.style.filter = `blur(${clicks * 1.4}px)`;
+    randomPos();
+  });
+</script>
+
+</body>
+</html>
